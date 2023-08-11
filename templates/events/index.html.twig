@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %} {% block title %}Events index{% endblock %} {% block body %}
+
+<div class="container w-100">
+    <div class="btn-group mb-3 d-flex justify-content-center">
+        <button type="button" class="btn btn-outline-danger filter-button" data-filter="all">All</button>
+        <button type="button" class="btn btn-outline-danger filter-button" data-filter="movie">Movie</button>
+        <button type="button" class="btn btn-outline-danger filter-button" data-filter="music">Music</button>
+        <button type="button" class="btn btn-outline-danger filter-button" data-filter="sport">Sport</button>
+        <button type="button" class="btn btn-outline-danger filter-button" data-filter="theater">Theater</button>
+    </div>
+
+    <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-xs-1">
+        {% for event in events %}
+        <div class="card m-2 pt-2 event-card {{ event.eventType }}">
+            <img src="{{ event.eventimage }}" class="card-img-top" style="width: 100%; height: 300px;" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">{{ event.eventName }}</h5>
+                <p class="card-text">{{ event.eventDescription }}</p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">{{ event.eventDate ? event.eventDate|date('Y-m-d H:i:s') : '' }}</li>
+            </ul>
+            <div class="card-body">
+                <a class="btn btn-primary" href="{{ path('app_events_show', { 'id': event.id }) }}">Show details</a>
+                <a class="btn btn-primary ms-2  ps-4 pe-4" href="{{ path('app_events_edit', { 'id': event.id }) }}">edit</a>
+                <a href="">{{ include('events/_delete_form.html.twig') }}</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% block javascripts %} {{ parent() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterButtons = document.querySelectorAll('.filter-button');
+        const eventCards = document.querySelectorAll('.event-card');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const filter = this.getAttribute('data-filter');
+                eventCards.forEach(card => {
+                    if (filter === 'all' || card.classList.contains(filter)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %} {% endblock %}
